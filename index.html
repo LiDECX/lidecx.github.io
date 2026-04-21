@@ -41,7 +41,7 @@
       background: var(--bg);
       color: var(--text);
       font-family: 'Inter', sans-serif;
-      font-weight: 300;
+      font-weight: 400;
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
       transition: background 0.2s ease, color 0.2s ease;
@@ -511,7 +511,10 @@
   </section>
 
   <footer>
-    <div class="container">© <span id="year"></span> LiDECX </div>
+    <div class="footer-inner">
+      <span>© <span id="year"></span> LiDECX</span>
+      <span>Built with Code</span>
+    </div>
   </footer>
 
   <script>
@@ -529,31 +532,37 @@
     const themeToggle = document.getElementById('themeToggle');
     const body = document.body;
 
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    body.setAttribute('data-theme', savedTheme);
+    themeToggle.textContent = savedTheme === 'dark' ? 'LIGHT' : 'DARK';
+
     themeToggle.addEventListener('click', () => {
       const isDark = body.getAttribute('data-theme') === 'dark';
       const newTheme = isDark ? 'light' : 'dark';
       body.setAttribute('data-theme', newTheme);
       themeToggle.textContent = isDark ? 'DARK' : 'LIGHT';
+      localStorage.setItem('theme', newTheme);
     });
 
     function autoUpdate() {
       const now = new Date();
-      document.getElementById('auto-year').textContent = now.getFullYear();
+      const yearEl = document.getElementById('year');
+      if(yearEl) yearEl.textContent = now.getFullYear();
 
-      const birthYear = 2010; // Исправь на свой год рождения для точности
-      const birthMonth = 0;   // Январь (0-11)
+      const birthYear = 2010; 
       let age = now.getFullYear() - birthYear;
-      if (now.getMonth() < birthMonth) age--;
       document.querySelectorAll('.auto-age').forEach(el => el.textContent = age);
 
       const hour = now.getHours();
       const statusText = document.getElementById('auto-status');
+      const statusDot = document.querySelector('.status-dot');
+      
       if (hour >= 23 || hour < 7) {
         statusText.textContent = 'сейчас отдыхаю';
-        document.querySelector('.status-dot').style.background = '#ff4b4b';
+        statusDot.style.background = '#ff4b4b';
       } else {
         statusText.textContent = 'открыт для проектов';
-        document.querySelector('.status-dot').style.background = 'var(--green)';
+        statusDot.style.background = 'var(--green)';
       }
     }
 
