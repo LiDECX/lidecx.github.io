@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="description" content="LiDECX — начинающий веб-разработчик. HTML, JavaScript, Python."/>
   <title>LiDECX</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
       --bg: #0a0a0a;
       --surface: #111111;
@@ -18,7 +18,22 @@
       --text: #999;
       --bright: #fff;
       --green: #4ade80;
+      --nav-bg: rgba(10, 10, 10, 0.9);
     }
+
+    [data-theme="light"] {
+      --bg: #ffffff;
+      --surface: #f5f5f5;
+      --border: #e5e5e5;
+      --accent: #1a1a1a;
+      --muted: #888;
+      --text: #444;
+      --bright: #000;
+      --green: #16a34a;
+      --nav-bg: rgba(255, 255, 255, 0.9);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     html { scroll-behavior: smooth; font-size: 16px; }
 
@@ -29,21 +44,20 @@
       font-weight: 300;
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
+      transition: background 0.2s ease, color 0.2s ease;
     }
 
-    /* ── LAYOUT ── */
     .container {
       max-width: 680px;
       margin: 0 auto;
       padding: 0 24px;
     }
 
-    /* ── NAV ── */
     nav {
       position: fixed;
       top: 0; left: 0; right: 0;
-      z-index: 50;
-      background: rgba(10,10,10,0.9);
+      z-index: 100;
+      background: var(--nav-bg);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
@@ -67,9 +81,15 @@
       letter-spacing: 0.05em;
     }
 
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
     .nav-links {
       display: flex;
-      gap: 28px;
+      gap: 24px;
       list-style: none;
     }
 
@@ -79,12 +99,27 @@
       text-decoration: none;
       transition: color 0.15s;
     }
+
     .nav-links a:hover { color: var(--bright); }
 
-    /* ── HERO ── */
-    #hero {
-      padding: 140px 0 80px;
+    .theme-toggle {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--bright);
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      transition: all 0.15s;
     }
+
+    .theme-toggle:hover {
+      background: var(--surface);
+      border-color: var(--muted);
+    }
+
+    #hero { padding: 140px 0 80px; }
 
     .hero-status {
       display: inline-flex;
@@ -121,7 +156,6 @@
       font-size: 1rem;
       color: var(--muted);
       margin-bottom: 24px;
-      font-weight: 300;
     }
 
     .hero-desc {
@@ -148,30 +182,15 @@
       display: inline-block;
     }
 
-    .btn-solid {
-      background: var(--bright);
-      color: var(--bg);
-      font-weight: 600;
-    }
-    .btn-solid:hover { background: #d4d4d4; }
+    .btn-solid { background: var(--bright); color: var(--bg); font-weight: 600; }
+    .btn-solid:hover { opacity: 0.8; }
 
-    .btn-ghost {
-      background: transparent;
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-    .btn-ghost:hover { border-color: #444; color: var(--bright); }
+    .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .btn-ghost:hover { border-color: var(--muted); color: var(--bright); }
 
-    /* ── DIVIDER ── */
-    .divider {
-      height: 1px;
-      background: var(--border);
-    }
+    .divider { height: 1px; background: var(--border); }
 
-    /* ── SECTION ── */
-    .section {
-      padding: 72px 0;
-    }
+    .section { padding: 72px 0; }
 
     .section-head {
       display: flex;
@@ -190,16 +209,9 @@
       font-size: 1rem;
       font-weight: 500;
       color: var(--bright);
-      letter-spacing: 0.02em;
     }
 
-    /* ── ABOUT ── */
-    .about-text {
-      font-size: 0.88rem;
-      line-height: 1.9;
-      color: var(--text);
-    }
-
+    .about-text { font-size: 0.88rem; line-height: 1.9; }
     .about-text p + p { margin-top: 14px; }
 
     .about-meta {
@@ -211,26 +223,17 @@
       flex-wrap: wrap;
     }
 
-    .meta-item {}
     .meta-label {
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.65rem;
       color: var(--muted);
       text-transform: uppercase;
-      letter-spacing: 0.08em;
       margin-bottom: 4px;
     }
-    .meta-value {
-      font-size: 0.85rem;
-      color: var(--accent);
-    }
 
-    /* ── SKILLS ── */
-    .skills-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
+    .meta-value { font-size: 0.85rem; color: var(--accent); }
+
+    .skills-list { display: flex; flex-wrap: wrap; gap: 8px; }
 
     .skill-tag {
       font-family: 'JetBrains Mono', monospace;
@@ -240,11 +243,11 @@
       border: 1px solid var(--border);
       padding: 6px 14px;
       border-radius: 4px;
-      transition: border-color 0.15s, color 0.15s;
+      transition: all 0.15s;
     }
-    .skill-tag:hover { border-color: #444; color: var(--bright); }
 
-    /* ── PROJECTS ── */
+    .skill-tag:hover { border-color: var(--muted); color: var(--bright); }
+
     .projects-list {
       display: flex;
       flex-direction: column;
@@ -265,29 +268,13 @@
       transition: background 0.15s;
       text-decoration: none;
     }
-    .project-item:hover { background: #161616; }
 
-    .project-left { flex: 1; min-width: 0; }
+    .project-item:hover { background: var(--bg); opacity: 0.9; }
 
-    .project-name {
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: var(--bright);
-      margin-bottom: 6px;
-    }
+    .project-name { font-size: 0.9rem; font-weight: 500; color: var(--bright); margin-bottom: 6px; }
+    .project-desc { font-size: 0.8rem; color: var(--muted); }
 
-    .project-desc {
-      font-size: 0.8rem;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-    .project-tags {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      margin-top: 12px;
-    }
+    .project-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
 
     .p-tag {
       font-family: 'JetBrains Mono', monospace;
@@ -299,37 +286,13 @@
       border-radius: 3px;
     }
 
-    .project-arrow {
-      color: var(--muted);
-      font-size: 1rem;
-      flex-shrink: 0;
-      margin-top: 2px;
-      transition: color 0.15s, transform 0.15s;
-    }
+    .project-arrow { color: var(--muted); font-size: 1rem; transition: all 0.15s; }
     .project-item:hover .project-arrow { color: var(--bright); transform: translate(2px,-2px); }
 
-    .project-wip {
-      background: var(--surface);
-      padding: 24px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+    .project-wip { background: var(--surface); padding: 24px; display: flex; align-items: center; gap: 10px; }
+    .wip-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); }
+    .wip-text { font-size: 0.8rem; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
 
-    .wip-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--muted);
-      flex-shrink: 0;
-    }
-
-    .wip-text {
-      font-size: 0.8rem;
-      color: var(--muted);
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    /* ── CONTACT ── */
     .contact-links {
       display: flex;
       flex-direction: column;
@@ -338,7 +301,6 @@
       border: 1px solid var(--border);
       border-radius: 8px;
       overflow: hidden;
-      margin-bottom: 32px;
     }
 
     .contact-link {
@@ -350,13 +312,10 @@
       text-decoration: none;
       transition: background 0.15s;
     }
-    .contact-link:hover { background: #161616; }
 
-    .contact-left {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
+    .contact-link:hover { background: var(--bg); }
+
+    .contact-left { display: flex; align-items: center; gap: 16px; }
 
     .contact-icon {
       width: 36px; height: 36px;
@@ -367,35 +326,19 @@
       align-items: center;
       justify-content: center;
       font-size: 0.9rem;
-      flex-shrink: 0;
     }
 
-    .contact-info {}
     .contact-label {
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.65rem;
       color: var(--muted);
       text-transform: uppercase;
-      letter-spacing: 0.08em;
       margin-bottom: 2px;
     }
-    .contact-value {
-      font-size: 0.82rem;
-      color: var(--accent);
-    }
 
-    .contact-arrow {
-      color: var(--muted);
-      font-size: 0.9rem;
-      transition: transform 0.15s, color 0.15s;
-    }
-    .contact-link:hover .contact-arrow { transform: translate(2px,-2px); color: var(--bright); }
+    .contact-value { font-size: 0.82rem; color: var(--accent); }
 
-    /* ── FOOTER ── */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 28px 0;
-    }
+    footer { border-top: 1px solid var(--border); padding: 28px 0; margin-top: 40px; }
 
     .footer-inner {
       max-width: 680px;
@@ -403,69 +346,48 @@
       padding: 0 24px;
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .footer-copy {
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.7rem;
       color: var(--muted);
     }
 
-    .footer-made {
-      font-size: 0.75rem;
-      color: var(--muted);
-    }
-
-    /* ── REVEAL ── */
     .reveal {
       opacity: 0;
-      transform: translateY(16px);
-      transition: opacity 0.5s ease, transform 0.5s ease;
+      transform: translateY(12px);
+      transition: all 0.6s ease-out;
     }
-    .reveal.visible { opacity: 1; transform: none; }
 
-    /* ── MOBILE ── */
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
     @media (max-width: 480px) {
-      .nav-links { gap: 18px; }
-      .nav-links a { font-size: 0.72rem; }
+      .nav-links { display: none; }
       #hero { padding: 120px 0 64px; }
-      .hero-name { font-size: 1.8rem; }
-      .about-meta { gap: 20px; }
       .project-item { flex-direction: column; gap: 8px; }
       .project-arrow { display: none; }
-      .footer-inner { flex-direction: column; align-items: flex-start; }
-    }
-
-    @media (max-width: 360px) {
-      .container { padding: 0 16px; }
-      .nav-inner { padding: 0 16px; }
     }
   </style>
 </head>
-<body>
+<body data-theme="dark">
 
-  <!-- NAV -->
   <nav>
     <div class="nav-inner">
       <a href="#hero" class="nav-logo">LiDECX</a>
-      <ul class="nav-links">
-        <li><a href="#about">Обо мне</a></li>
-        <li><a href="#skills">Навыки</a></li>
-        <li><a href="#projects">Проекты</a></li>
-        <li><a href="#contact">Контакты</a></li>
-      </ul>
+      <div class="nav-right">
+        <ul class="nav-links">
+          <li><a href="#about">Обо мне</a></li>
+          <li><a href="#projects">Проекты</a></li>
+          <li><a href="#contact">Контакты</a></li>
+        </ul>
+        <button class="theme-toggle" id="themeToggle">LIGHT</button>
+      </div>
     </div>
   </nav>
 
-  <!-- HERO -->
   <section id="hero">
     <div class="container">
       <div class="hero-status">
         <span class="status-dot"></span>
-        открыт для проектов
+        <span id="auto-status">открыт для проектов</span>
       </div>
       <h1 class="hero-name">Привет, я Михаил</h1>
       <p class="hero-sub">Начинающий веб-разработчик</p>
@@ -482,7 +404,6 @@
 
   <div class="divider"></div>
 
-  <!-- ABOUT -->
   <section id="about" class="section">
     <div class="container">
       <div class="section-head reveal">
@@ -490,13 +411,13 @@
         <span class="section-title">Обо мне</span>
       </div>
       <div class="about-text reveal">
-        <p>Меня зовут Михаил, мне 15 лет. Увлекаюсь программированием и веб-технологиями — умею верстать страницы, оформлять интерфейс и добавлять базовую логику.</p>
+        <p>Меня зовут Михаил, мне <span class="auto-age">15</span> лет. Увлекаюсь программированием и веб-технологиями — умею верстать страницы, оформлять интерфейс и добавлять базовую логику.</p>
         <p>Основные направления: разработка сайтов на HTML и программы на Python. Всегда готов попробовать что-то новое и учиться на практике.</p>
       </div>
       <div class="about-meta reveal">
         <div class="meta-item">
           <div class="meta-label">Возраст</div>
-          <div class="meta-value">15 лет</div>
+          <div class="meta-value"><span class="auto-age">15</span> лет</div>
         </div>
         <div class="meta-item">
           <div class="meta-label">Никнейм</div>
@@ -512,7 +433,6 @@
 
   <div class="divider"></div>
 
-  <!-- SKILLS -->
   <section id="skills" class="section">
     <div class="container">
       <div class="section-head reveal">
@@ -522,6 +442,7 @@
       <div class="skills-list reveal">
         <span class="skill-tag">Python</span>
         <span class="skill-tag">HTML</span>
+        <span class="skill-tag">CSS</span>
         <span class="skill-tag">JavaScript</span>
         <span class="skill-tag">Telegram Bots</span>
       </div>
@@ -530,7 +451,6 @@
 
   <div class="divider"></div>
 
-  <!-- PROJECTS -->
   <section id="projects" class="section">
     <div class="container">
       <div class="section-head reveal">
@@ -559,7 +479,6 @@
 
   <div class="divider"></div>
 
-  <!-- CONTACT -->
   <section id="contact" class="section">
     <div class="container">
       <div class="section-head reveal">
@@ -591,11 +510,10 @@
     </div>
   </section>
 
-  <!-- FOOTER -->
   <footer>
     <div class="footer-inner">
-      <span class="footer-copy">© 2026 LiDECX</span>
-      <span class="footer-made">Сделано с ❤️ и строками кода</span>
+      <span>© <span id="auto-year">2026</span> LiDECX</span>
+      <span>Сделано с ❤️</span>
     </div>
   </footer>
 
@@ -607,9 +525,42 @@
           observer.unobserve(e.target);
         }
       });
-    }, { threshold: 0.08 });
+    }, { threshold: 0.1 });
 
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+
+    themeToggle.addEventListener('click', () => {
+      const isDark = body.getAttribute('data-theme') === 'dark';
+      const newTheme = isDark ? 'light' : 'dark';
+      body.setAttribute('data-theme', newTheme);
+      themeToggle.textContent = isDark ? 'DARK' : 'LIGHT';
+    });
+
+    function autoUpdate() {
+      const now = new Date();
+      document.getElementById('auto-year').textContent = now.getFullYear();
+
+      const birthYear = 2010; // Исправь на свой год рождения для точности
+      const birthMonth = 0;   // Январь (0-11)
+      let age = now.getFullYear() - birthYear;
+      if (now.getMonth() < birthMonth) age--;
+      document.querySelectorAll('.auto-age').forEach(el => el.textContent = age);
+
+      const hour = now.getHours();
+      const statusText = document.getElementById('auto-status');
+      if (hour >= 23 || hour < 7) {
+        statusText.textContent = 'сейчас отдыхаю';
+        document.querySelector('.status-dot').style.background = '#ff4b4b';
+      } else {
+        statusText.textContent = 'открыт для проектов';
+        document.querySelector('.status-dot').style.background = 'var(--green)';
+      }
+    }
+
+    autoUpdate();
   </script>
 
 </body>
