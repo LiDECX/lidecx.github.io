@@ -1,311 +1,331 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="LiDECX — начинающий веб-разработчик. HTML, JavaScript, Python."/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>LiDECX</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     :root {
-      --bg: #0a0a0a;
-      --surface: #111111;
-      --border: #1e1e1e;
-      --accent: #e8e8e8;
-      --muted: #555;
-      --text: #999;
-      --bright: #fff;
-      --green: #4ade80;
-      --nav-bg: rgba(10, 10, 10, 0.9);
+      --accent-1: #a78bfa;
+      --accent-2: #60a5fa;
+      --bg: #03050a;
+      --glass-bg: rgba(12, 15, 24, 0.7);
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
     }
 
-    [data-theme="light"] {
-      --bg: #ffffff;
-      --surface: #f5f5f5;
-      --border: #e5e5e5;
-      --accent: #1a1a1a;
-      --muted: #888;
-      --text: #444;
-      --bright: #000;
-      --green: #16a34a;
-      --nav-bg: rgba(255, 255, 255, 0.9);
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      position: relative;
+      overflow-x: hidden;
     }
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; font-size: 16px; }
-    body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-weight: 400; line-height: 1.6; -webkit-font-smoothing: antialiased; transition: background 0.2s ease, color 0.2s ease; }
-    .container { max-width: 680px; margin: 0 auto; padding: 0 24px; }
+    .bg-mesh {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
 
-    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: var(--nav-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
-    .nav-inner { max-width: 680px; margin: 0 auto; padding: 0 24px; height: 56px; display: flex; justify-content: space-between; align-items: center; }
-    .nav-logo { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--bright); text-decoration: none; letter-spacing: 0.05em; }
-    .nav-right { display: flex; align-items: center; gap: 24px; }
-    .nav-links { display: flex; gap: 24px; list-style: none; }
-    .nav-links a { font-size: 0.78rem; color: var(--muted); text-decoration: none; transition: color 0.15s; }
-    .nav-links a:hover { color: var(--bright); }
+    .bg-mesh::before {
+      content: "";
+      position: absolute;
+      top: -20%;
+      left: -20%;
+      width: 70%;
+      height: 70%;
+      background: radial-gradient(circle at 30% 30%, rgba(96, 165, 250, 0.25), transparent 60%);
+      filter: blur(100px);
+      animation: drift 18s infinite alternate ease-in-out;
+    }
 
-    .theme-toggle { background: none; border: 1px solid var(--border); color: var(--bright); cursor: pointer; padding: 4px 8px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; transition: all 0.15s; }
-    .theme-toggle:hover { background: var(--surface); border-color: var(--muted); }
+    .bg-mesh::after {
+      content: "";
+      position: absolute;
+      bottom: -15%;
+      right: -15%;
+      width: 65%;
+      height: 65%;
+      background: radial-gradient(circle at 70% 70%, rgba(167, 139, 250, 0.3), transparent 60%);
+      filter: blur(110px);
+      animation: drift 22s infinite alternate-reverse ease-in-out;
+    }
 
-    #hero { padding: 140px 0 80px; }
-    .hero-status { display: inline-flex; align-items: center; gap: 8px; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--muted); margin-bottom: 32px; }
-    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
-    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    @keyframes drift {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(4%, 5%) scale(1.15); }
+    }
 
-    .hero-name { font-family: 'JetBrains Mono', monospace; font-size: clamp(2rem, 6vw, 2.8rem); font-weight: 600; color: var(--bright); line-height: 1.2; margin-bottom: 8px; }
-    .hero-sub { font-size: 1rem; color: var(--muted); margin-bottom: 24px; }
-    .hero-desc { font-size: 0.9rem; line-height: 1.8; color: var(--text); max-width: 480px; margin-bottom: 40px; }
-    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .card {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 400px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      border-radius: 2.5rem;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,0.08);
+      padding: 2.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: transform 0.4s ease, border-color 0.3s;
+    }
 
-    .btn { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; padding: 10px 20px; border-radius: 6px; text-decoration: none; transition: all 0.15s; display: inline-block; }
-    .btn-solid { background: var(--bright); color: var(--bg); font-weight: 600; }
-    .btn-solid:hover { opacity: 0.8; }
-    .btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border); }
-    .btn-ghost:hover { border-color: var(--muted); color: var(--bright); }
+    .card:hover {
+      border-color: rgba(255,255,255,0.14);
+    }
 
-    .divider { height: 1px; background: var(--border); }
-    .section { padding: 72px 0; }
-    .section-head { display: flex; align-items: baseline; gap: 16px; margin-bottom: 40px; }
-    .section-num { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); }
-    .section-title { font-size: 1rem; font-weight: 500; color: var(--bright); }
+    .avatar-group {
+      position: relative;
+      margin-bottom: 1.8rem;
+    }
 
-    .about-text { font-size: 0.88rem; line-height: 1.9; }
-    .about-text p + p { margin-top: 14px; }
-    .about-meta { display: flex; gap: 32px; margin-top: 32px; padding-top: 32px; border-top: 1px solid var(--border); flex-wrap: wrap; }
-    .meta-label { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); text-transform: uppercase; margin-bottom: 4px; }
-    .meta-value { font-size: 0.85rem; color: var(--accent); }
+    .avatar-ring {
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, var(--accent-1), var(--accent-2), var(--accent-1));
+      filter: blur(12px);
+      opacity: 0.7;
+      animation: rotateGlow 8s linear infinite;
+    }
 
-    .skills-list { display: flex; flex-wrap: wrap; gap: 8px; }
-    .skill-tag { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text); background: var(--surface); border: 1px solid var(--border); padding: 6px 14px; border-radius: 4px; transition: all 0.15s; }
-    .skill-tag:hover { border-color: var(--muted); color: var(--bright); }
+    @keyframes rotateGlow {
+      to { transform: rotate(360deg); }
+    }
 
-    .projects-list { display: flex; flex-direction: column; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-    .project-item { background: var(--surface); padding: 24px; display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; transition: background 0.15s; text-decoration: none; }
-    .project-item:hover { background: var(--bg); opacity: 0.9; }
-    .project-name { font-size: 0.9rem; font-weight: 500; color: var(--bright); margin-bottom: 6px; }
-    .project-desc { font-size: 0.8rem; color: var(--muted); }
-    .project-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
-    .p-tag { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); background: var(--bg); border: 1px solid var(--border); padding: 3px 8px; border-radius: 3px; }
-    .project-arrow { color: var(--muted); font-size: 1rem; transition: all 0.15s; }
-    .project-item:hover .project-arrow { color: var(--bright); transform: translate(2px,-2px); }
+    .avatar {
+      width: 90px;
+      height: 90px;
+      background: linear-gradient(145deg, #111827, #0b0f1a);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 38px;
+      font-weight: 600;
+      color: white;
+      position: relative;
+      z-index: 2;
+      border: 1px solid rgba(255,255,255,0.15);
+      box-shadow: 0 15px 30px -10px rgba(0,0,0,0.7);
+      letter-spacing: -0.5px;
+    }
 
-    .project-wip { background: var(--surface); padding: 24px; display: flex; align-items: center; gap: 10px; }
-    .wip-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); }
-    .wip-text { font-size: 0.8rem; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+    .name {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      background: linear-gradient(to bottom, #ffffff, #cbd5e1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.2rem;
+      text-align: center;
+    }
 
-    .contact-links { display: flex; flex-direction: column; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-    .contact-link { background: var(--surface); padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; text-decoration: none; transition: background 0.15s; }
-    .contact-link:hover { background: var(--bg); }
-    .contact-left { display: flex; align-items: center; gap: 16px; }
-    .contact-icon { width: 36px; height: 36px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; }
-    .contact-label { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); text-transform: uppercase; margin-bottom: 2px; }
-    .contact-value { font-size: 0.82rem; color: var(--accent); }
+    .username {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--accent-2);
+      background: rgba(96, 165, 250, 0.12);
+      padding: 0.3rem 1.2rem;
+      border-radius: 30px;
+      margin-bottom: 2rem;
+      letter-spacing: 0.3px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(96, 165, 250, 0.25);
+    }
 
-    footer { border-top: 1px solid var(--border); padding: 28px 0; margin-top: 40px; }
-    .footer-inner { max-width: 680px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); }
+    .bio-panel {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.35);
+      border-radius: 1.8rem;
+      padding: 1.5rem 1.3rem;
+      margin-bottom: 2rem;
+      border: 1px solid rgba(255,255,255,0.04);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+      position: relative;
+    }
 
-    .reveal { opacity: 0; transform: translateY(12px); transition: all 0.6s ease-out; }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .bio-panel:hover {
+      background: rgba(0, 0, 0, 0.5);
+      border-color: rgba(255,255,255,0.1);
+      box-shadow: 0 20px 30px -15px rgba(0,0,0,0.5);
+    }
 
-    @media (max-width: 480px) { .nav-links { display: none; } #hero { padding: 120px 0 64px; } .project-item { flex-direction: column; gap: 8px; } .project-arrow { display: none; } }
-  </style>
-</head>
-<body data-theme="dark">
+    .bio-icon {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.8rem;
+    }
 
-  <nav>
-    <div class="nav-inner">
-      <a href="#hero" class="nav-logo">LiDECX</a>
-      <div class="nav-right">
-        <ul class="nav-links">
-          <li><a href="#about">Обо мне</a></li>
-          <li><a href="#projects">Проекты</a></li>
-          <li><a href="#contact">Контакты</a></li>
-        </ul>
-        <button class="theme-toggle" id="themeToggle">LIGHT</button>
-      </div>
-    </div>
-  </nav>
+    .bio-icon span {
+      background: rgba(167, 139, 250, 0.2);
+      padding: 0.2rem 0.6rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      color: #c4b5fd;
+    }
 
-  <section id="hero">
-    <div class="container">
-      <div class="hero-status">
-        <span class="status-dot"></span>
-        <span id="auto-status">открыт для проектов</span>
-      </div>
-      <h1 class="hero-name">Привет, я Михаил</h1>
-      <p class="hero-sub">Начинающий веб-разработчик</p>
-      <p class="hero-desc">
-        Создаю сайты и простые сервисы. Работаю с HTML, JavaScript и Python.
-        Развиваюсь в веб-разработке и постепенно расширяю навыки.
-      </p>
-      <div class="hero-actions">
-        <a href="#projects" class="btn btn-solid">Проекты</a>
-        <a href="#contact" class="btn btn-ghost">Написать</a>
-      </div>
-    </div>
-  </section>
+    .bio-text {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      font-weight: 350;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
 
-  <div class="divider"></div>
+    .bio-text i {
+      font-style: normal;
+      margin-right: 0.4rem;
+      opacity: 0.8;
+    }
 
-  <section id="about" class="section">
-    <div class="container">
-      <div class="section-head reveal">
-        <span class="section-num">01</span>
-        <span class="section-title">Обо мне</span>
-      </div>
-      <div class="about-text reveal">
-        <p>Меня зовут Михаил, мне <span class="auto-age">15</span> лет. Увлекаюсь программированием и веб-технологиями — умею верстать страницы, оформлять интерфейс и добавлять базовую логику.</p>
-        <p>Основные направления: разработка сайтов на HTML и программы на Python. Всегда готов попробовать что-то новое и учиться на практике.</p>
-      </div>
-      <div class="about-meta reveal">
-        <div class="meta-item">
-          <div class="meta-label">Возраст</div>
-          <div class="meta-value"><span class="auto-age">15</span> лет</div>
-        </div>
-        <div class="meta-item">
-          <div class="meta-label">Никнейм</div>
-          <div class="meta-value">LiDECX</div>
-        </div>
-        <div class="meta-item">
-          <div class="meta-label">Статус</div>
-          <div class="meta-value">Начинающий разработчик</div>
-        </div>
-      </div>
-    </div>
-  </section>
+    .actions {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
 
-  <div class="divider"></div>
+    .link-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.7rem;
+      padding: 0.95rem 1.2rem;
+      border-radius: 1.3rem;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255,255,255,0.06);
+      color: #f8fafc;
+      font-weight: 500;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
+      backdrop-filter: blur(10px);
+      letter-spacing: 0.2px;
+    }
 
-  <section id="projects" class="section">
-    <div class="container">
-      <div class="section-head reveal">
-        <span class="section-num">02</span>
-        <span class="section-title">Проекты</span>
-      </div>
-      <div class="projects-list reveal">
-        <a href="https://lidecx.github.io/oge/" target="_blank" rel="noopener" class="project-item">
-          <div class="project-left">
-            <div class="project-name">Расписание ОГЭ 2026</div>
-            <div class="project-desc">Интерактивный трекер экзаменов для учеников 9«В» с таймерами и поиском.</div>
-            <div class="project-tags">
-              <span class="p-tag">HTML</span>
-              <span class="p-tag">JavaScript</span>
-            </div>
-          </div>
-          <div class="project-arrow">↗</div>
-        </a>
-        <a href="https://lidecx.github.io/summer_countdown" target="_blank" rel="noopener" class="project-item">
-          <div class="project-left">
-            <div class="project-name">Summer Countdown</div>
-            <div class="project-desc">Обратный отсчёт до лета с анимацией и живым таймером.</div>
-            <div class="project-tags">
-              <span class="p-tag">HTML</span>
-              <span class="p-tag">JavaScript</span>
-            </div>
-          </div>
-          <div class="project-arrow">↗</div>
-        </a>
-        <div class="project-wip">
-          <div class="wip-dot"></div>
-          <span class="wip-text">// новые проекты в разработке</span>
-        </div>
-      </div>
-    </div>
-  </section>
+    .link-btn svg {
+      width: 1.3rem;
+      height: 1.3rem;
+      fill: currentColor;
+      opacity: 0.9;
+      transition: transform 0.3s;
+    }
 
-  <div class="divider"></div>
+    .link-btn:hover {
+      background: rgba(255, 255, 255, 0.07);
+      border-color: rgba(255,255,255,0.18);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 22px -10px rgba(0,0,0,0.6);
+    }
 
-  <section id="contact" class="section">
-    <div class="container">
-      <div class="section-head reveal">
-        <span class="section-num">03</span>
-        <span class="section-title">Контакты</span>
-      </div>
-      <div class="contact-links reveal">
-        <a href="https://t.me/CyberNews_safety_support_bot" target="_blank" rel="noopener" class="contact-link">
-          <div class="contact-left">
-            <div class="contact-icon">✈️</div>
-            <div class="contact-info">
-              <div class="contact-label">Поддержка</div>
-              <div class="contact-value">@CyberNews_safety_support_bot</div>
-            </div>
-          </div>
-          <div class="contact-arrow">↗</div>
-        </a>
-        <a href="https://t.me/CyberNews_safety" target="_blank" rel="noopener" class="contact-link">
-          <div class="contact-left">
-            <div class="contact-icon">📢</div>
-            <div class="contact-info">
-              <div class="contact-label">Telegram канал</div>
-              <div class="contact-value">@CyberNews_safety</div>
-            </div>
-          </div>
-          <div class="contact-arrow">↗</div>
-        </a>
-      </div>
-    </div>
-  </section>
+    .link-btn:hover svg {
+      transform: translateX(2px);
+    }
 
-  <footer>
-    <div class="footer-inner">
-      <span>© <span id="year"></span> LiDECX</span>
-      <span>v2.1.0</span>
-    </div>
-  </footer>
+    .primary-btn {
+      background: linear-gradient(105deg, rgba(96, 165, 250, 0.2) 0%, rgba(167, 139, 250, 0.15) 100%);
+      border-color: rgba(139, 92, 246, 0.35);
+      box-shadow: 0 8px 18px -8px rgba(96, 165, 250, 0.25);
+    }
 
-  <script>
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.classList.add('visible');
-          observer.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.1 });
+    .primary-btn:hover {
+      background: linear-gradient(105deg, rgba(96, 165, 250, 0.3) 0%, rgba(167, 139, 250, 0.25) 100%);
+      border-color: rgba(167, 139, 250, 0.55);
+      box-shadow: 0 14px 24px -8px rgba(139, 92, 246, 0.4);
+    }
 
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    .fade-up {
+      animation: fadeUp 0.7s cubic-bezier(0.2, 0.9, 0.3, 1) forwards;
+      opacity: 0;
+      transform: translateY(18px);
+    }
 
-    const themeToggle = document.getElementById('themeToggle');
-    const body = document.body;
+    .d1 { animation-delay: 0.05s; }
+    .d2 { animation-delay: 0.15s; }
+    .d3 { animation-delay: 0.25s; }
+    .d4 { animation-delay: 0.35s; }
+    .d5 { animation-delay: 0.45s; }
 
-    const savedTheme = localStorage.getItem('theme') || 'dark';
-    body.setAttribute('data-theme', savedTheme);
-    themeToggle.textContent = savedTheme === 'dark' ? 'LIGHT' : 'DARK';
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-    themeToggle.addEventListener('click', () => {
-      const isDark = body.getAttribute('data-theme') === 'dark';
-      const newTheme = isDark ? 'light' : 'dark';
-      body.setAttribute('data-theme', newTheme);
-      themeToggle.textContent = isDark ? 'DARK' : 'LIGHT';
-      localStorage.setItem('theme', newTheme);
-    });
-
-    function autoUpdate() {
-      const now = new Date();
-      const yearEl = document.getElementById('year');
-      if(yearEl) yearEl.textContent = now.getFullYear();
-
-      const birthYear = 2010; 
-      let age = now.getFullYear() - birthYear;
-      document.querySelectorAll('.auto-age').forEach(el => el.textContent = age);
-
-      const hour = now.getHours();
-      const statusText = document.getElementById('auto-status');
-      const statusDot = document.querySelector('.status-dot');
-      
-      if (hour >= 23 || hour < 7) {
-        statusText.textContent = 'сейчас отдыхаю';
-        statusDot.style.background = '#ff4b4b';
-      } else {
-        statusText.textContent = 'открыт для проектов';
-        statusDot.style.background = 'var(--green)';
+    @media (max-width: 420px) {
+      .card {
+        padding: 2rem 1.5rem;
+        border-radius: 2rem;
       }
     }
+  </style>
+</head>
+<body>
+  <div class="bg-mesh"></div>
 
-    autoUpdate();
-  </script>
+  <main class="card">
+    <div class="avatar-group fade-up d1">
+      <div class="avatar-ring"></div>
+      <div class="avatar">М</div>
+    </div>
 
+    <h1 class="name fade-up d2">Михаил</h1>
+    <div class="username fade-up d3">@LiDECX</div>
+
+    <div class="bio-panel fade-up d4">
+      <div class="bio-icon">
+        ⚡ <span>Programming & Vibe Coding</span>
+      </div>
+      <div class="bio-text">
+        <div>Создаю сайты и простые сервисы. Работаю с HTML, JavaScript и Python. Развиваюсь в веб-разработке и постепенно расширяю навыки.</div>
+      </div>
+    </div>
+
+    <div class="actions fade-up d5">
+      <a href="https://t.me/CyberNews_safety" target="_blank" rel="noopener" class="link-btn primary-btn">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.19-.08-.05-.19-.02-.27 0-.12.03-1.98 1.26-5.59 3.7-.53.36-1.01.54-1.44.53-.48-.01-1.39-.27-2.07-.49-.83-.27-1.49-.41-1.43-.87.03-.24.34-.49.92-.75 3.6-1.56 6-2.59 7.2-3.09 3.43-1.43 4.14-1.68 4.61-1.69.1 0 .33.02.48.14.12.1.16.24.18.34.01.07.01.16 0 .25z"/>
+        </svg>
+        Мой канал
+      </a>
+
+      <a href="https://t.me/Portfolio_by_LiDECX" target="_blank" rel="noopener" class="link-btn">
+        <svg viewBox="0 0 24 24">
+          <path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/>
+        </svg>
+        Портфолио
+      </a>
+    </div>
+  </main>
 </body>
 </html>
